@@ -64,30 +64,40 @@ public class ITFocusDefaults {
 
     @Test
     public void testDefaultAttributes() {
-        Warp.initiate(new Activity() {
-            public void perform() {
-                browser.get(contextPath.toExternalForm());
-            }
-        }).inspect(new AbstractComponentAssertion() {
-            private static final long serialVersionUID = 1L;
+        browser.get(contextPath.toString());// workaround for WarpSynchronizationException
 
-            @AfterPhase(Phase.RENDER_RESPONSE)
-            public void verify_default_attributes() {
-                AbstractFocus component = bean.getComponent();
-                assertTrue("Component is ajaxRenderer='true' by default", component.isAjaxRendered());
-                assertTrue("Component is validationAware='true' by default", component.isValidationAware());
-                assertFalse("Component is preserve='false' by default", component.isPreserve());
-                assertFalse("Component is delayed='false' by default", component.isDelayed());
-            }
-        });
+        Warp
+            .initiate(new Activity() {
+                @Override
+                public void perform() {
+                    browser.get(contextPath.toString());
+                }
+            })
+            .inspect(new AbstractComponentAssertion() {
+                private static final long serialVersionUID = 1L;
+
+                @AfterPhase(Phase.RENDER_RESPONSE)
+                public void verify_default_attributes() {
+                    AbstractFocus component = bean.getComponent();
+                    assertTrue("Component is ajaxRenderer='true' by default", component.isAjaxRendered());
+                    assertTrue("Component is validationAware='true' by default", component.isValidationAware());
+                    assertFalse("Component is preserve='false' by default", component.isPreserve());
+                    assertFalse("Component is delayed='false' by default", component.isDelayed());
+                }
+            });
     }
 
     @Test
     public void testDefaultFocusCandidates() {
-        Warp.initiate(new Activity() {
-            public void perform() {
-                browser.get(contextPath.toExternalForm());
-            }
-        }).inspect(new VerifyFocusCandidates("There are no invalid components, whole form is candidate", null, "form"));
+        browser.get(contextPath.toString());// workaround for WarpSynchronizationException
+
+        Warp
+            .initiate(new Activity() {
+                @Override
+                public void perform() {
+                    browser.get(contextPath.toString());
+                }
+            })
+            .inspect(new VerifyFocusCandidates("There are no invalid components, whole form is candidate", null, "form"));
     }
 }

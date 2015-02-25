@@ -19,7 +19,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.richfaces.component.region;
 
 import static org.jboss.arquillian.warp.client.filter.http.HttpFilters.request;
@@ -51,6 +50,7 @@ public abstract class AbstractRegionTest {
     private WebElement button;
 
     protected static class RegionTestDeployment extends A4JDeployment {
+
         RegionTestDeployment(Class<?> baseClass) {
             super(baseClass);
             this.archive().addClasses(RegionBean.class, SetupExecute.class, VerifyExecutedIds.class);
@@ -59,17 +59,22 @@ public abstract class AbstractRegionTest {
     }
 
     protected void setupExecute(String execute) {
-        Warp.initiate(new Activity() {
+        browser.get(contextPath.toString());// workaround for WarpSynchronizationException
 
-            @Override
-            public void perform() {
-                browser.get(contextPath.toString());
-            }
-        }).inspect(new SetupExecute(execute));
+        Warp
+            .initiate(
+                new Activity() {
+                    @Override
+                    public void perform() {
+                        browser.get(contextPath.toString());
+                    }
+                })
+            .inspect(new SetupExecute(execute));
     }
 
     protected void verifyExecutedIds(String... expectedExecutedIds) {
         Warp.initiate(new Activity() {
+            @Override
             public void perform() {
                 button.click();
             }

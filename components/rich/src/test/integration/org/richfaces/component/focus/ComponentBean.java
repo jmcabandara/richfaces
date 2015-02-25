@@ -1,5 +1,7 @@
 package org.richfaces.component.focus;
 
+import java.io.Serializable;
+
 import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -8,7 +10,9 @@ import javax.inject.Named;
 
 @Named
 @RequestScoped
-public class ComponentBean {
+public class ComponentBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private UIComponent component;
 

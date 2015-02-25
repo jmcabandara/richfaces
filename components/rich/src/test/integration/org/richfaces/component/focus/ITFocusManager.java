@@ -73,7 +73,7 @@ public class ITFocusManager {
         RichDeployment deployment = new RichDeployment(ITFocusManager.class);
 
         deployment.archive().addClasses(ComponentBean.class, VerifyFocusCandidates.class, VerifyFocusEnforcing.class,
-                VerifyFocusEnforcingOverridesFocusSettings.class, AbstractComponentAssertion.class);
+            VerifyFocusEnforcingOverridesFocusSettings.class, AbstractComponentAssertion.class);
         deployment.archive().addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
         addIndexPage(deployment);
@@ -86,7 +86,10 @@ public class ITFocusManager {
     @Test
     @Category(Smoke.class)
     public void test_FocusManager_on_initial_request() {
-        Warp.initiate(openPage).inspect(new VerifyFocusEnforcing("input2"));
+        browser.get(contextPath.toString());// workaround for WarpSynchronizationException
+
+        Warp.initiate(openPage)
+            .inspect(new VerifyFocusEnforcing("input2"));
 
         Graphene.waitGui().until(new ElementIsFocused(input2));
     }
@@ -97,8 +100,8 @@ public class ITFocusManager {
         browser.get(contextPath.toExternalForm());
         // when
         Warp.initiate(submit)
-        // then
-                .inspect(new VerifyFocusEnforcing("input2"));
+            // then
+            .inspect(new VerifyFocusEnforcing("input2"));
         Graphene.waitGui().until(new ElementIsFocused(input2));
     }
 
@@ -108,8 +111,8 @@ public class ITFocusManager {
         browser.get(contextPath.toExternalForm());
         // when
         Warp.initiate(ajax)
-        // then
-                .inspect(new VerifyFocusEnforcing("input2"));
+            // then
+            .inspect(new VerifyFocusEnforcing("input2"));
         Graphene.waitGui().until(new ElementIsFocused(input2));
     }
 

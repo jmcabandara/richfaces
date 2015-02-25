@@ -21,12 +21,16 @@
  */
 package org.richfaces.component.region;
 
+import java.io.Serializable;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 @ManagedBean
 @ViewScoped
-public class RegionBean {
+public class RegionBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String execute;
 
