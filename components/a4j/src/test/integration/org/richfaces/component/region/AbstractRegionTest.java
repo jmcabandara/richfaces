@@ -54,22 +54,23 @@ public abstract class AbstractRegionTest {
         RegionTestDeployment(Class<?> baseClass) {
             super(baseClass);
             this.archive().addClasses(RegionBean.class, SetupExecute.class, VerifyExecutedIds.class);
+            this.archive().addClasses(LoadPageActivity.class, Activity.class);
             this.archive().addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        }
+    }
+
+    private class LoadPageActivity implements Activity {
+        
+        @Override
+        public void perform() {
+            browser.get(contextPath.toString());
         }
     }
 
     protected void setupExecute(String execute) {
         browser.get(contextPath.toString());// workaround for WarpSynchronizationException
 
-        Warp
-            .initiate(
-                new Activity() {
-                    @Override
-                    public void perform() {
-                        browser.get(contextPath.toString());
-                    }
-                })
-            .inspect(new SetupExecute(execute));
+        Warp.initiate(new LoadPageActivity()).inspect(new SetupExecute(execute));
     }
 
     protected void verifyExecutedIds(String... expectedExecutedIds) {
