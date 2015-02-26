@@ -51,6 +51,7 @@ public class ITFocusManager {
     private WebElement input2;
 
     private Activity openPage = new Activity() {
+        @Override
         public void perform() {
             browser.get(contextPath.toExternalForm());
         }

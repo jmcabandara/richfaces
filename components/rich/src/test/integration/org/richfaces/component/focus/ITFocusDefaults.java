@@ -45,6 +45,7 @@ public class ITFocusDefaults {
 
         deployment.archive()
             .addClasses(ComponentBean.class, VerifyFocusCandidates.class, AbstractComponentAssertion.class)
+            .addClasses(LoadPageActivity.class, Activity.class)
             .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
         addIndexPage(deployment);
@@ -62,42 +63,36 @@ public class ITFocusDefaults {
         deployment.archive().addAsWebResource(p, "index.xhtml");
     }
 
+    private class LoadPageActivity implements Activity {
+
+        @Override
+        public void perform() {
+            browser.get(contextPath.toString());
+        }
+    }
+
     @Test
     public void testDefaultAttributes() {
         browser.get(contextPath.toString());// workaround for WarpSynchronizationException
 
-        Warp
-            .initiate(new Activity() {
-                @Override
-                public void perform() {
-                    browser.get(contextPath.toString());
-                }
-            })
-            .inspect(new AbstractComponentAssertion() {
-                private static final long serialVersionUID = 1L;
+        Warp.initiate(new LoadPageActivity()).inspect(new AbstractComponentAssertion() {
+            private static final long serialVersionUID = 1L;
 
-                @AfterPhase(Phase.RENDER_RESPONSE)
-                public void verify_default_attributes() {
-                    AbstractFocus component = bean.getComponent();
-                    assertTrue("Component is ajaxRenderer='true' by default", component.isAjaxRendered());
-                    assertTrue("Component is validationAware='true' by default", component.isValidationAware());
-                    assertFalse("Component is preserve='false' by default", component.isPreserve());
-                    assertFalse("Component is delayed='false' by default", component.isDelayed());
-                }
-            });
+            @AfterPhase(Phase.RENDER_RESPONSE)
+            public void verify_default_attributes() {
+                AbstractFocus component = bean.getComponent();
+                assertTrue("Component is ajaxRenderer='true' by default", component.isAjaxRendered());
+                assertTrue("Component is validationAware='true' by default", component.isValidationAware());
+                assertFalse("Component is preserve='false' by default", component.isPreserve());
+                assertFalse("Component is delayed='false' by default", component.isDelayed());
+            }
+        });
     }
 
     @Test
     public void testDefaultFocusCandidates() {
         browser.get(contextPath.toString());// workaround for WarpSynchronizationException
 
-        Warp
-            .initiate(new Activity() {
-                @Override
-                public void perform() {
-                    browser.get(contextPath.toString());
-                }
-            })
-            .inspect(new VerifyFocusCandidates("There are no invalid components, whole form is candidate", null, "form"));
+        Warp.initiate(new LoadPageActivity()).inspect(new VerifyFocusCandidates("There are no invalid components, whole form is candidate", null, "form"));
     }
 }

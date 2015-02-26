@@ -87,6 +87,7 @@ public class ITFileUpload {
 
         Warp
             .initiate(new Activity() {
+                @Override
                 public void perform() {
                     uploadButton.click();
                 }})
